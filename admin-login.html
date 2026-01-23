@@ -13,7 +13,7 @@
   <input type="text" id="username" placeholder="Username">
   <input type="password" id="password" placeholder="Password">
 
-  <button class="primary-btn" onclick="login()">Login</button>
+  <button id="loginBtn" class="primary-btn" onclick="login()">Login</button>
   <button class="secondary-btn" onclick="goBack()">Back</button>
 </div>
 
@@ -32,11 +32,16 @@ const SCRIPT_URL =
 function login() {
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
+  const btn = document.getElementById("loginBtn");
 
   if (!username || !password) {
     showModal("Please enter username and password.");
     return;
   }
+
+  // 🔄 Loading state
+  btn.classList.add("loading");
+  btn.innerHTML = `<span class="spinner"></span>Logging in...`;
 
   fetch(SCRIPT_URL, {
     method: "POST",
@@ -49,12 +54,19 @@ function login() {
       localStorage.setItem("adminName", data.name);
       window.location.href = "admin-dashboard.html";
     } else {
+      resetButton();
       showModal("Invalid credentials or inactive account.");
     }
   })
   .catch(() => {
+    resetButton();
     showModal("Login failed. Please try again.");
   });
+
+  function resetButton() {
+    btn.classList.remove("loading");
+    btn.innerHTML = "Login";
+  }
 }
 
 function goBack() {
@@ -73,3 +85,4 @@ function closeModal() {
 
 </body>
 </html>
+
