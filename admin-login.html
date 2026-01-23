@@ -10,16 +10,11 @@
 <div class="container">
   <h1>Admin Login</h1>
 
-  <form id="loginForm" method="POST">
-    <input type="text" name="username" placeholder="Username" required>
-    <input type="password" name="password" placeholder="Password" required>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
 
-    <input type="hidden" name="redirect"
-      value="https://jeremylimtech-dev.github.io/ncp-leave-frontend/admin-login.html">
-
-    <button class="primary-btn" type="submit">Login</button>
-    <button class="secondary-btn" type="button" onclick="goBack()">Back</button>
-  </form>
+  <button class="primary-btn" onclick="login()">Login</button>
+  <button class="secondary-btn" onclick="goBack()">Back</button>
 </div>
 
 <!-- Modal -->
@@ -31,24 +26,41 @@
 </div>
 
 <script>
-/* 🔴 CHANGE THIS */
-document.getElementById("loginForm").action =
+const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbwAiAyEifv4NM2zauRpYwR16XdI_wKiAXQKcGz0meu4rcZDTHnTt94oNJt0AvCWK_1a/exec";
 
-/* Handle redirect result */
-const params = new URLSearchParams(window.location.search);
+function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-if (params.get("ok") === "1") {
-  localStorage.setItem("isAdmin", "true");
-  localStorage.setItem("adminName", params.get("name"));
-  window.location.href = "admin-dashboard.html";
+  if (!username || !password) {
+    showModal("Please enter username and password.");
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: new URLSearchParams({ username, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      localStorage.setItem("isAdmin", "true");
+      localStorage.setItem("adminName", data.name);
+      window.location.href = "admin-dashboard.html";
+    } else {
+      showModal("Invalid credentials or inactive account.");
+    }
+  })
+  .catch(() => {
+    showModal("Login failed. Please try again.");
+  });
 }
 
-if (params.get("ok") === "0") {
-  showModal("Invalid username or password.");
+function goBack() {
+  window.location.href = "index.html";
 }
 
-/* Modal */
 function showModal(msg) {
   document.getElementById("modal-message").innerText = msg;
   document.getElementById("modal-overlay").style.display = "flex";
@@ -56,11 +68,6 @@ function showModal(msg) {
 
 function closeModal() {
   document.getElementById("modal-overlay").style.display = "none";
-}
-
-/* Back */
-function goBack() {
-  window.location.href = "index.html";
 }
 </script>
 
