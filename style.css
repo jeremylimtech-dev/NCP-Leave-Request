@@ -150,4 +150,19 @@ input {
   background: #1f4ed8;
 }
 
+/* Leave button group */
+.leave-options {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.admin-icon {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  z-index: 10;
+}
+
+
 
