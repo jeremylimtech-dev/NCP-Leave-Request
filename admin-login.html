@@ -39,28 +39,35 @@ function login() {
     return;
   }
 
-  // 🔄 Loading state
+  // 🔄 SHOW LOADING STATE
   btn.classList.add("loading");
   btn.innerHTML = `<span class="spinner"></span>Logging in...`;
 
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    body: new URLSearchParams({ username, password })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      localStorage.setItem("isAdmin", "true");
-      localStorage.setItem("adminName", data.name);
-      window.location.href = "admin-dashboard.html";
-    } else {
+  // ✅ Force browser repaint so spinner is visible
+  requestAnimationFrame(() => {
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      body: new URLSearchParams({ username, password })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        localStorage.setItem("isAdmin", "true");
+        localStorage.setItem("adminName", data.name);
+
+        // ⏳ Small delay so user SEES success animation
+        setTimeout(() => {
+          window.location.href = "admin-dashboard.html";
+        }, 600);
+      } else {
+        resetButton();
+        showModal("Invalid credentials or inactive account.");
+      }
+    })
+    .catch(() => {
       resetButton();
-      showModal("Invalid credentials or inactive account.");
-    }
-  })
-  .catch(() => {
-    resetButton();
-    showModal("Login failed. Please try again.");
+      showModal("Login failed. Please try again.");
+    });
   });
 
   function resetButton() {
@@ -85,4 +92,3 @@ function closeModal() {
 
 </body>
 </html>
-
