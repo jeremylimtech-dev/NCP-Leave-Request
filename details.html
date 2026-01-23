@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Leave Details</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h1>Leave Details</h1>
+
+  <input type="text" id="name" readonly>
+  <input type="text" id="balance" readonly>
+
+  <input type="date" id="startDate">
+  <input type="date" id="endDate">
+
+  <textarea id="reason" placeholder="Reason"></textarea>
+
+  <button class="primary-btn" onclick="submitLeave()">Submit</button>
+
+  <div class="small-text">
+    * Sick leave more than 2 days may require medical certificate
+  </div>
+</div>
+
+<script>
+/* Populate name & balance */
+document.getElementById("name").value =
+  localStorage.getItem("employeeName") || "";
+
+const leaveType = localStorage.getItem("leaveType");
+
+let balanceText = "N/A";
+if (leaveType === "Sick") balanceText = "5 days";
+if (leaveType === "Annual") balanceText = "10 days";
+if (leaveType === "Unpaid") balanceText = "Unlimited";
+
+document.getElementById("balance").value =
+  leaveType + " Balance: " + balanceText;
+
+/* Submit to Google Sheets */
+function submitLeave() {
+  const start = document.getElementById("startDate").value;
+  const end = document.getElementById("endDate").value;
+  const reason = document.getElementById("reason").value;
+
+  if (!start || !end) {
+    alert("Please select leave dates.");
+    return;
+  }
+
+  const payload = {
+    name: localStorage.getItem("employeeName"),
+    type: localStorage.getItem("leaveType"),
+    start: start,
+    end: end,
+    reason: reason
+  };
+
+  fetch("https://script.google.com/macros/s/AKfycbwAiAyEifv4NM2zauRpYwR16XdI_wKiAXQKcGz0meu4rcZDTHnTt94oNJt0AvCWK_1a/exec", {
+    method: "POST",
+    mode: "no-cors",   // IMPORTANT for Google Apps Script
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    window.location.href = "submitted.html";
+  })
+  .catch(() => {
+    alert("Submission failed. Please try again.");
+  });
+}
+</script>
+
+</body>
+</html>

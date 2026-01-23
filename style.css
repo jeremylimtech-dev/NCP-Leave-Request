@@ -1,0 +1,123 @@
+* {
+  box-sizing: border-box;
+  font-family: Inter, Arial, sans-serif;
+}
+
+/* Background */
+body {
+  margin: 0;
+  height: 100vh;
+  background: url("bg.png") no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+/* Admin Button */
+.admin-icon {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.admin-icon:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Card */
+.container {
+  width: 360px;
+  background: rgba(12, 30, 110, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+  text-align: center;
+}
+
+/* Title */
+h1 {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+/* Leave Buttons */
+.leave-options {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.leave-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.leave-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.leave-btn.active {
+  background: #1f4ed8;
+}
+
+/* Primary Button */
+.primary-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  border: none;
+  background: #1f4ed8;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.primary-btn:hover {
+  background: #3b6cff;
+}
+
+.secondary-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.4);
+  background: transparent;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.secondary-btn:hover {
+  background: rgba(255,255,255,0.15);
+}

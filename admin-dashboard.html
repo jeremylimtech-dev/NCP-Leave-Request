@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Logout Button -->
+<div class="admin-icon" onclick="logoutAdmin()">Logout</div>
+
+<div class="container" style="width: 800px; text-align: left;">
+  <h1 style="text-align:center;">Admin Dashboard</h1>
+
+  <!-- Leave Requests -->
+  <h3>Leave Requests</h3>
+
+  <table style="width:100%; color:white; font-size:14px; border-collapse: collapse;">
+    <tr style="opacity:0.8;">
+      <th align="left">Name</th>
+      <th align="left">Type</th>
+      <th align="left">Dates</th>
+      <th align="left">Status</th>
+      <th align="center">Action</th>
+    </tr>
+
+    <tr>
+      <td>Juan D.</td>
+      <td>Sick</td>
+      <td>Jan 22 – Jan 24</td>
+      <td id="status1">Pending</td>
+      <td align="center">
+        <button onclick="approve(1)">✔</button>
+        <button onclick="reject(1)">✖</button>
+      </td>
+    </tr>
+  </table>
+
+  <br><br>
+
+  <!-- Balances -->
+  <h3>Employee Leave Balances</h3>
+
+  <table style="width:100%; color:white; font-size:14px; border-collapse: collapse;">
+    <tr style="opacity:0.8;">
+      <th align="left">Name</th>
+      <th align="center">Sick</th>
+      <th align="center">Annual</th>
+      <th align="center">Unpaid</th>
+      <th align="center">Save</th>
+    </tr>
+
+    <tr>
+      <td>Juan D.</td>
+      <td align="center"><input value="5" style="width:60px;"></td>
+      <td align="center"><input value="10" style="width:60px;"></td>
+      <td align="center">∞</td>
+      <td align="center">
+        <button onclick="saveBalance()">Save</button>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<script>
+/* Protect Admin Page */
+if (localStorage.getItem("isAdmin") !== "true") {
+  window.location.href = "admin-login.html";
+}
+
+/* Approve / Reject */
+function approve(id) {
+  document.getElementById("status" + id).innerText = "Approved";
+  alert("Leave approved");
+}
+
+function reject(id) {
+  document.getElementById("status" + id).innerText = "Rejected";
+  alert("Leave rejected");
+}
+
+/* Save Balance */
+function saveBalance() {
+  alert("Balances updated");
+}
+
+/* Logout */
+function logoutAdmin() {
+  localStorage.removeItem("isAdmin");
+  window.location.href = "admin-login.html";
+}
+</script>
+
+</body>
+</html>

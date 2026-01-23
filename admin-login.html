@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h1>Admin Login</h1>
+
+  <input
+    type="text"
+    id="adminUser"
+    placeholder="Username"
+  >
+
+  <input
+    type="password"
+    id="adminPass"
+    placeholder="Password"
+  >
+
+  <button class="primary-btn" onclick="loginAdmin()">Login</button>
+
+  <!-- Back Button -->
+  <button class="secondary-btn" onclick="goBack()">Back to Leave Page</button>
+</div>
+
+<script>
+/* If already logged in, skip login */
+if (localStorage.getItem("isAdmin") === "true") {
+  window.location.href = "admin-dashboard.html";
+}
+
+function loginAdmin() {
+  const user = document.getElementById("adminUser").value.trim();
+  const pass = document.getElementById("adminPass").value.trim();
+
+  if (user === "" || pass === "") {
+    alert("Please enter username and password.");
+    return;
+  }
+
+  /* Demo credentials */
+  if (user === "admin" && pass === "1234") {
+    localStorage.setItem("isAdmin", "true");
+    window.location.href = "admin-dashboard.html";
+  } else {
+    alert("Invalid admin credentials.");
+  }
+}
+
+function goBack() {
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
