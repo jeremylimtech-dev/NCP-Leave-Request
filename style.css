@@ -105,7 +105,7 @@ input {
 }
 
 /* 🔄 LOGIN LOADING STATE */
-button.loading {
+#loginBtn.loading {
   pointer-events: none;
   opacity: 0.85;
 }
@@ -128,3 +128,26 @@ button.loading {
     transform: rotate(360deg);
   }
 }
+
+/* FIX: Leave type buttons */
+.leave-btn {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.leave-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+.leave-btn.active {
+  background: #1f4ed8;
+}
+
+
