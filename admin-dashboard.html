@@ -87,12 +87,16 @@ function closeModal() {
 }
 
 function logoutAdmin() {
-  localStorage.removeItem("isAdmin");
-  localStorage.removeItem("adminName");
-  window.location.replace("admin-login.html");
+  localStorage.clear();
+
+  window.location.replace(
+    "https://jeremylimtech-dev.github.io/ncp-leave-frontend/admin-login.html"
+  );
 }
+
 </script>
 
 
 </body>
 </html>
+
