@@ -74,3 +74,14 @@
   font-size: 13px;
   border-radius: 8px;
 }
+
+/* =====================
+   ADMIN PAGE LAYOUT
+===================== */
+body.admin {
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 60px;
+}
+
+
