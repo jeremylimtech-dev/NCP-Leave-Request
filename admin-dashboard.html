@@ -62,11 +62,12 @@ fetch(SCRIPT_URL + "?action=getLeaves")
         </div>
 
         <div class="request-body">
-          <div><b>Type:</b> ${l.type}</div>
-          <div><b>Dates:</b> ${formatDate(l.start)} → ${formatDate(l.end)}</div>
-          <div><b>Balance:</b> ${l.balance}</div>
-          <div class="reason"><b>Reason:</b> ${l.reason || "-"}</div>
+          <div><b>${l.type} Leave</b></div>
+          <div>${formatDate(l.start)} → ${formatDate(l.end)}</div>
+          <div>Balance: ${l.balance}</div>
+          <div class="reason">Reason: ${l.reason || "-"}</div>
         </div>
+
 
         ${
           l.status === "Pending"
@@ -130,4 +131,5 @@ function logoutAdmin() {
 
 </body>
 </html>
+
 
