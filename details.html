@@ -34,14 +34,20 @@
 </div>
 
 <script>
+/* =====================
+   CONFIG
+===================== */
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbz4zMRShI6IwL7ehez3Q9VX_ysMQb3Otv__59tgoe5-91zfEN1THvLSJjty_TCN24Wp/exec";
 
-/* Populate user */
+/* =====================
+   POPULATE USER DATA
+===================== */
 document.getElementById("name").value =
   localStorage.getItem("employeeName") || "";
 
 const leaveType = localStorage.getItem("leaveType");
+
 let balanceText = "N/A";
 if (leaveType === "Sick") balanceText = "5 days";
 if (leaveType === "Annual") balanceText = "10 days";
@@ -50,52 +56,61 @@ if (leaveType === "Unpaid") balanceText = "Unlimited";
 document.getElementById("balance").value =
   leaveType + " Balance: " + balanceText;
 
-/* Show filename */
+/* =====================
+   SHOW FILE NAME
+===================== */
 document.getElementById("attachment").addEventListener("change", e => {
+  const file = e.target.files[0];
   document.getElementById("file-name").innerText =
-    e.target.files[0]?.name || "";
+    file ? file.name : "";
 });
 
-/* Submit */
+/* =====================
+   SUBMIT LEAVE
+===================== */
 function submitLeave() {
-  const start = startDate.value;
-  const end = endDate.value;
-  const reason = reasonField.value;
-  const file = attachment.files[0];
+  const start = document.getElementById("startDate").value;
+  const end = document.getElementById("endDate").value;
+  const reason = document.getElementById("reason").value;
+  const fileInput = document.getElementById("attachment");
+  const file = fileInput.files[0];
 
   if (!start || !end) {
-    alert("Please select dates");
+    alert("Please select leave dates.");
     return;
   }
 
+  /* 🔒 FILE SIZE GUARD (3MB) */
   if (file && file.size > 3 * 1024 * 1024) {
-    alert("Max file size is 3MB");
+    alert("File too large. Maximum size is 3MB.");
     return;
   }
 
   if (file) {
     const reader = new FileReader();
-    reader.onload = () => {
-      send({
+    reader.onload = function () {
+      const base64 = reader.result.split(",")[1];
+
+      sendPayload({
         action: "submitLeave",
         name: localStorage.getItem("employeeName"),
         type: leaveType,
-        balance: balance.value,
+        balance: document.getElementById("balance").value,
         start,
         end,
         reason,
         fileName: file.name,
         fileType: file.type,
-        fileData: reader.result.split(",")[1]
+        fileData: base64
       });
     };
     reader.readAsDataURL(file);
   } else {
-    send({
+    sendPayload({
       action: "submitLeave",
       name: localStorage.getItem("employeeName"),
       type: leaveType,
-      balance: balance.value,
+      balance: document.getElementById("balance").value,
       start,
       end,
       reason
@@ -103,14 +118,21 @@ function submitLeave() {
   }
 }
 
-/* 🔥 FIRE-AND-FORGET */
-function send(payload) {
+/* =====================
+   SEND TO APPS SCRIPT
+   (CORS-SAFE)
+===================== */
+function sendPayload(payload) {
   fetch(SCRIPT_URL, {
     method: "POST",
+    mode: "no-cors",          // ✅ REQUIRED
+    headers: {
+      "Content-Type": "text/plain"
+    },
     body: JSON.stringify(payload)
   });
 
-  // ✅ DO NOT WAIT
+  // 🚀 Fire-and-forget
   window.location.href = "submitted.html";
 }
 </script>
