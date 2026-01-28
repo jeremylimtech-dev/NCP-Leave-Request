@@ -203,3 +203,162 @@ button {
     transform: rotate(360deg);
   }
 }
+
+/* =====================
+   ADMIN REQUEST CARD (CLEAN)
+===================== */
+
+.request-card {
+  background: rgba(255,255,255,0.07);
+  border-left: 4px solid #facc15;
+  padding: 16px 18px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+
+/* Header */
+.request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.employee-name {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Status pill */
+.status {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-weight: 600;
+}
+
+.status.pending {
+  background: #facc15;
+  color: #000;
+}
+
+.status.approved {
+  background: #22c55e;
+}
+
+.status.rejected {
+  background: #ef4444;
+}
+
+/* Body */
+.request-body {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.leave-type {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.dates {
+  opacity: 0.95;
+}
+
+.days {
+  opacity: 0.75;
+  margin-left: 4px;
+  font-size: 13px;
+}
+
+.balance {
+  margin-top: 4px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.reason {
+  margin-top: 8px;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+/* Actions */
+.request-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+}
+
+.request-actions .primary-btn,
+.request-actions .secondary-btn {
+  padding: 10px;
+  font-size: 13px;
+  border-radius: 10px;
+}
+
+.file-label {
+  display: block;
+  text-align: left;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.file-label input {
+  display: block;
+  margin-top: 6px;
+}
+
+.file-name {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+.attachment-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: #93c5fd;
+  text-decoration: none;
+}
+
+.attachment-link:hover {
+  text-decoration: underline;
+}
+
+.employee-name {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.leave-type {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.dates {
+  font-size: 14px;
+}
+
+.days {
+  opacity: 0.7;
+  margin-left: 4px;
+}
+
+.balance {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.attachment {
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.attachment a {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+
