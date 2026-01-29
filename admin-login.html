@@ -20,20 +20,44 @@
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbz4zMRShI6IwL7ehez3Q9VX_ysMQb3Otv__59tgoe5-91zfEN1THvLSJjty_TCN24Wp/exec";
 
-function login() {
+function loginAdmin() {
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
 
   if (!username || !password) {
-    alert("Please enter username and password.");
+    alert("Please enter username and password");
     return;
   }
 
-  // 🔁 REDIRECT — NOT fetch()
-  window.location.href =
-    `${SCRIPT_URL}?login=admin&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+  const formData = new FormData();
+  formData.append("username", username);
+  formData.append("password", password);
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: formData
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        alert("Invalid credentials or inactive account.");
+        return;
+      }
+
+      // ✅ STORE ADMIN SESSION
+      localStorage.setItem("isAdmin", "true");
+      localStorage.setItem("adminName", data.name);
+
+      // ✅ GO TO DASHBOARD
+      window.location.href = "admin-dashboard.html";
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Login failed. Please try again.");
+    });
 }
 </script>
+
 
 </body>
 </html>
