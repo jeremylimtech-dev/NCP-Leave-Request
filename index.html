@@ -2,70 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>NCP Leave Submission</title>
+  <title>NCP Bookkeeping</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- Admin Button (Top Right) -->
-<div class="admin-icon" onclick="goAdmin()">Admin</div>
+<div class="admin-icon" onclick="goAdmin()">Login</div>
 
-<!-- Main Card -->
-<div class="container">
-  <h1>NCP Bookkeeping Leave Submission</h1>
-
-  <input
-    type="text"
-    id="name"
-    placeholder="Name"
-  >
-
-  <div class="leave-options">
-    <button type="button" class="leave-btn" onclick="selectLeave(this, 'Sick')">SICK</button>
-    <button type="button" class="leave-btn" onclick="selectLeave(this, 'Annual')">ANNUAL</button>
-    <button type="button" class="leave-btn" onclick="selectLeave(this, 'Unpaid')">UNPAID</button>
+<!-- Branding (Top Left) -->
+<div style="position: fixed; top: 20px; left: 30px; z-index: 10;">
+  <div class="brand">
+    <div class="brand-circle">
+      <img src="logo.png" alt="NCP Logo">
+    </div>
+    <span>NCP Bookkeeping</span>
   </div>
+</div>
 
-  <button class="primary-btn" onclick="goNext()">Continue</button>
+<!-- Main Content -->
+<div class="container">
+
+  <h1>
+    Do what you do best,<br>
+    leave the numbers to us 😊
+  </h1>
+
+  <button class="primary-btn" style="margin-top: 18px;" onclick="goInquire()">
+    Inquire now
+  </button>
+
 </div>
 
 <script>
-let selectedLeave = "";
-
-function selectLeave(button, type) {
-  selectedLeave = type;
-
-  document.querySelectorAll(".leave-btn").forEach(btn => {
-    btn.classList.remove("active");
-  });
-
-  button.classList.add("active");
-}
-
-function goNext() {
-  const name = document.getElementById("name").value.trim();
-
-  if (name === "") {
-    alert("Please enter your name.");
-    return;
-  }
-
-  if (selectedLeave === "") {
-    alert("Please select a leave type.");
-    return;
-  }
-
-  localStorage.setItem("employeeName", name);
-  localStorage.setItem("leaveType", selectedLeave);
-
-  window.location.href = "details.html";
-}
-
 function goAdmin() {
-  window.location.href = "admin-login.html";
+  window.location.href = "employee-login.html";
+}
+
+function goInquire() {
+  window.open(
+    "https://www.facebook.com/profile.php?id=100094502228820",
+    "_blank"
+  );
 }
 </script>
 
 </body>
 </html>
-

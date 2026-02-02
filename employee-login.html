@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="admin-icon" onclick="goAdmin()">Admin</div>
 
 <!-- Branding (Top Left) -->
 <div style="position: fixed; top: 20px; left: 30px; z-index: 10;">
@@ -18,13 +19,10 @@
 </div>
 
 <div class="container">
-  <h1>Admin Login</h1>
-
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
+  <h1>Employee Login</h1>
 
 	<button class="primary-btn" onclick="loginAdmin()" id="loginBtn">
-		Login
+		Google Login
 	</button>
 
 	<button class="secondary-btn" onclick="goBack()" style="margin-top: 10px;">
@@ -41,12 +39,15 @@ function goBack() {
   if (document.referrer) {
     window.history.back();
   } else {
-    window.location.href = "employee-login.html";
+    window.location.href = "index.html";
   }
 }
 
+function goAdmin() {
+  window.location.href = "admin-login.html";
+}
 
-function loginAdmin() {
+function loginEmployee() {
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
   const btn = document.getElementById("loginBtn");
