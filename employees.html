@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employees</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="admin-header">
+  <div class="admin-left">
+    <div class="brand">
+      <div class="brand-circle">
+        <img src="logo.png" alt="NCP Logo">
+      </div>
+      <span>Employees</span>
+    </div>
+  </div>
+
+  <div class="admin-center"></div>
+
+  <div class="admin-right">
+  	<button class="secondary-btn" onclick="addEmployee()">Add</button>
+    <button class="secondary-btn" onclick="goBack()">Back</button>
+  </div>
+</div>
+
+<!-- EMPLOYEE GRID -->
+<div class="employee-grid" id="employeeGrid"></div>
+
+<script>
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbz4zMRShI6IwL7ehez3Q9VX_ysMQb3Otv__59tgoe5-91zfEN1THvLSJjty_TCN24Wp/exec";
+
+function addEmployee() {
+  window.location.href="add-employee.html";
+  }
+  
+function goBack() {
+  window.history.back();
+}
+
+fetch(`${SCRIPT_URL}?action=getEmployees`)
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) throw new Error("Failed to load employees");
+
+    const grid = document.getElementById("employeeGrid");
+
+    data.employees.forEach(emp => {
+      const btn = document.createElement("button");
+      btn.className = "employee-btn";
+      btn.textContent = emp.name;
+      btn.onclick = () => openEmployee(emp.id);
+      grid.appendChild(btn);
+    });
+  })
+  .catch(err => alert(err.message));
+
+function openEmployee(id) {
+  // Future: employee profile / edit page
+  alert("Employee ID: " + id);
+}
+</script>
+
+</body>
+</html>
