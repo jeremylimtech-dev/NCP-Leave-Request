@@ -7,24 +7,22 @@
 </head>
 <body>
 
+<div class="admin-icon" onclick="goBack()">Back</div>
+
 <!-- HEADER -->
 <div class="admin-header">
   <div class="admin-left">
-    Admin: <span id="adminName"></span>
+    Admin: <strong id="adminName"></strong>
   </div>
 
   <div class="admin-center">
     <div class="admin-title">Leave Submissions</div>
     <div class="admin-subtitle">Pending Leave Requests</div>
   </div>
-
-  <div class="admin-right">
-    <button class="secondary-btn" onclick="logoutAdmin()">Logout</button>
-  </div>
 </div>
 
-<!-- MAIN CONTAINER -->
-<div class="container" style="width: 900px; margin-top: 100px;">
+<!-- CONTENT -->
+<div class="container" style="width: 900px; margin-top: 110px;">
   <div id="no-requests" class="empty-state" style="display:none;">
     No pending leave requests 🎉
   </div>
@@ -41,31 +39,25 @@
 </div>
 
 <script>
-/* =========================
-   CONFIG
-========================= */
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbz4zMRShI6IwL7ehez3Q9VX_ysMQb3Otv__59tgoe5-91zfEN1THvLSJjty_TCN24Wp/exec";
-  
-const adminName = localStorage.getItem("adminName");
-document.getElementById("adminName").innerText = adminName || "Admin";
 
 /* =========================
-   AUTH GUARD
+   AUTH
 ========================= */
 if (localStorage.getItem("isAdmin") !== "true") {
   window.location.replace("admin-login.html");
 }
 
-document.getElementById("adminName").innerText =
+document.getElementById("adminName").textContent =
   localStorage.getItem("adminName") || "Admin";
-
-const container = document.getElementById("requests");
-const emptyState = document.getElementById("no-requests");
 
 /* =========================
    LOAD PENDING LEAVES
 ========================= */
+const container = document.getElementById("requests");
+const emptyState = document.getElementById("no-requests");
+
 fetch(SCRIPT_URL + "?action=getPendingLeaves")
   .then(res => res.json())
   .then(data => {
@@ -87,12 +79,12 @@ fetch(SCRIPT_URL + "?action=getPendingLeaves")
         </div>
 
         <div class="request-body">
-          <div class="leave-type">${l.type} Leave</div>
+          <div class="leave-type">${l.leaveType} Leave</div>
           <div class="dates">
             ${formatDate(l.start)} → ${formatDate(l.end)}
             <span class="days">(${days} days)</span>
           </div>
-          <div class="balance">${l.balance}</div>
+          <div class="balance">${l.hoursRequested} hours requested</div>
           <div class="reason">Reason: ${l.reason || "-"}</div>
         </div>
 
@@ -125,10 +117,7 @@ function updateStatus(rowIndex, status, btn) {
   formData.append("status", status);
   formData.append("adminName", localStorage.getItem("adminName"));
 
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    body: formData
-  })
+  fetch(SCRIPT_URL, { method: "POST", body: formData })
     .then(res => res.json())
     .then(data => {
       if (!data.success) {
@@ -157,7 +146,7 @@ function formatDate(d) {
 function calculateDays(start, end) {
   const s = new Date(start);
   const e = new Date(end);
-  return Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
+  return Math.round((e - s) / 86400000) + 1;
 }
 
 function showModal(msg) {
@@ -169,10 +158,14 @@ function closeModal() {
   document.getElementById("modal-overlay").style.display = "none";
 }
 
-function logoutAdmin() {
-  localStorage.clear();
-  window.location.replace("admin-login.html");
+function goBack() {
+  if (document.referrer) {
+    window.history.back();
+  } else {
+    window.location.href = "admin-dashboard.html";
+  }
 }
+
 </script>
 
 </body>

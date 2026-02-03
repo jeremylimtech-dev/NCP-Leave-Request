@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Login</title>
+  <title>Employee Login</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
+
 <div class="admin-icon" onclick="goAdmin()">Admin</div>
 
 <!-- Branding (Top Left) -->
@@ -18,23 +22,35 @@
   </div>
 </div>
 
-<div class="container">
+<div class="container employee-login-card">
   <h1>Employee Login</h1>
 
-	<button class="primary-btn" onclick="loginAdmin()" id="loginBtn">
-		Google Login
-	</button>
+  <!-- Google button -->
+  <div id="googleBtn" class="google-login-wrapper"></div>
 
-	<button class="secondary-btn" onclick="goBack()" style="margin-top: 10px;">
-		Back
-	</button>
+  <p class="login-hint">Sign in using your company email</p>
 
+  <!-- Loading state -->
+  <div id="googleLoading" class="google-loading hidden">
+    <div class="spinner"></div>
+    <p>Signing you in…</p>
+  </div>
+
+  <!-- Helper text -->
+  <p class="login-helper">
+    Not registered? <span onclick="contactAdmin()">Contact admin</span>
+  </p>
+
+  <button class="secondary-btn" onclick="goBack()" style="margin-top: 12px;">
+    Back
+  </button>
 </div>
 
 <script>
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbz4zMRShI6IwL7ehez3Q9VX_ysMQb3Otv__59tgoe5-91zfEN1THvLSJjty_TCN24Wp/exec";
 
+/* Navigation */
 function goBack() {
   if (document.referrer) {
     window.history.back();
@@ -47,47 +63,68 @@ function goAdmin() {
   window.location.href = "admin-login.html";
 }
 
-function loginEmployee() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
-  const btn = document.getElementById("loginBtn");
+/* Google Login Callback */
+function handleCredentialResponse(response) {
+  // show loading
+  document.getElementById("googleBtn").classList.add("hidden");
+  document.getElementById("googleLoading").classList.remove("hidden");
 
-  if (!username || !password) {
-    alert("Please enter username and password");
-    return;
-  }
+  verifyEmployee(response.credential);
+}
 
-  // 🔄 loading state
-  btn.disabled = true;
-  btn.classList.add("loading");
-  btn.innerHTML = "Logging in…";
+/* Initialize Google Login */
+window.onload = function () {
+  google.accounts.id.initialize({
+    client_id: "14009431850-vkipfmcfkvtql27977rrcoq4e2uuif78.apps.googleusercontent.com",
+    callback: handleCredentialResponse
+  });
 
-  const formData = new FormData();
-  formData.append("username", username);
-  formData.append("password", password);
+  google.accounts.id.renderButton(
+    document.getElementById("googleBtn"),
+    {
+      theme: "filled_blue",
+      size: "large",
+      width: 260
+    }
+  );
+};
 
+function contactAdmin() {
+  window.location.href = "mailto:admin@ncpbookkeeping.com";
+}
+
+/* Send token to Apps Script */
+function verifyEmployee(idToken) {
   fetch(SCRIPT_URL, {
     method: "POST",
-    body: formData
+    body: JSON.stringify({
+      action: "verifyEmployeeGoogle",
+      token: idToken
+    })
   })
     .then(res => res.json())
     .then(data => {
       if (!data.success) {
-        throw new Error("Invalid credentials or inactive account");
+        alert("Access denied. Email not registered.");
+        resetLoginUI();
+        return;
       }
 
-      localStorage.setItem("isAdmin", "true");
-      localStorage.setItem("adminName", data.name);
+      localStorage.setItem("employeeId", data.employee.id);
+      localStorage.setItem("employeeName", data.employee.name);
+      localStorage.setItem("employeeEmail", data.employee.email);
 
-      window.location.href = "admin-dashboard.html";
+      window.location.href = "employee-dashboard.html";
     })
-    .catch(err => {
-      alert(err.message);
-
-      btn.disabled = false;
-      btn.classList.remove("loading");
-      btn.innerHTML = "Login";
+    .catch(() => {
+      alert("Login failed. Please try again.");
+      resetLoginUI();
     });
+}
+
+function resetLoginUI() {
+  document.getElementById("googleBtn").classList.remove("hidden");
+  document.getElementById("googleLoading").classList.add("hidden");
 }
 </script>
 
