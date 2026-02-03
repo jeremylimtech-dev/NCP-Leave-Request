@@ -29,6 +29,26 @@
 <!-- EMPLOYEE GRID -->
 <div class="employee-grid" id="employeeGrid"></div>
 
+
+<!-- EMPLOYEE MODAL -->
+<div class="modal-overlay" id="employeeModal">
+  <div class="employee-modal">
+    <div class="avatar">
+      <img src="avatar.png" alt="Avatar">
+    </div>
+
+    <h2 id="modalName">Name</h2>
+
+    <button class="primary-btn" onclick="editEmployee()">Edit Employee</button>
+    <button class="primary-btn" onclick="viewStatus()">Status</button>
+    <button class="primary-btn" onclick="viewDetails()">Details</button>
+
+    <button class="secondary-btn" onclick="closeModal()" style="margin-top:12px;">
+      Close
+    </button>
+  </div>
+</div>
+
 <script>
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbz4zMRShI6IwL7ehez3Q9VX_ysMQb3Otv__59tgoe5-91zfEN1THvLSJjty_TCN24Wp/exec";
@@ -58,10 +78,41 @@ fetch(`${SCRIPT_URL}?action=getEmployees`)
   })
   .catch(err => alert(err.message));
 
+let selectedEmployeeId = "";
+
 function openEmployee(id) {
-  // Future: employee profile / edit page
-  alert("Employee ID: " + id);
+  fetch(`${SCRIPT_URL}?action=getEmployee&id=${id}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) throw new Error("Employee not found");
+
+      selectedEmployeeId = id;
+      document.getElementById("modalName").textContent =
+        data.employee.name;
+
+      document.getElementById("employeeModal").style.display = "flex";
+    })
+    .catch(err => alert(err.message));
 }
+
+
+function closeModal() {
+  document.getElementById("employeeModal").style.display = "none";
+}
+
+function editEmployee() {
+  window.location.href =
+    `edit-employee.html?id=${selectedEmployeeId}`;
+}
+
+function viewStatus() {
+  alert("Status feature coming soon");
+}
+
+function viewDetails() {
+  alert("Details feature coming soon");
+}
+
 </script>
 
 </body>
