@@ -95,13 +95,16 @@ function contactAdmin() {
 
 /* Send token to Apps Script */
 function verifyEmployee(idToken) {
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "verifyEmployeeGoogle",
-      token: idToken
-    })
+fetch(SCRIPT_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    action: "verifyEmployeeGoogle",
+    token: idToken
   })
+})
     .then(res => res.json())
     .then(data => {
       if (!data.success) {
