@@ -15,16 +15,16 @@
     <input type="text" id="employeeName" readonly />
   </div>
 
-	<div class="field-group">
-		<label>Leave type</label>
-		<select id="leaveType">
-			<option value="Sick">Sick Leave</option>
-			<option value="Annual">Annual Leave</option>
-		</select>
-	</div>
+  <div class="field-group">
+    <label>Leave type</label>
+    <select id="leaveType">
+      <option value="Sick">Sick Leave</option>
+      <option value="Annual">Annual Leave</option>
+    </select>
+  </div>
 
   <div class="field-group">
-    <label>Available Balance</label>
+    <label>Available balance</label>
     <input type="text" id="balance" readonly />
   </div>
 
@@ -82,18 +82,31 @@ let availableBalanceHours = 0;
 (async function init() {
   const employeeId = localStorage.getItem("employeeId");
   const name = localStorage.getItem("employeeName");
-  
+
   if (!employeeId || !name) {
-  alert("Session expired. Please login again.");
-  window.location.href = "employee-login.html";
-  return;
- }
+    alert("Session expired. Please login again.");
+    window.location.href = "employee-login.html";
+    return;
+  }
 
   employeeName.value = name;
-  balance.value = "Loading balance…";
+
+  await loadBalance();
+
+  leaveType.addEventListener("change", loadBalance);
+})();
+
+/* =====================
+   LOAD BALANCE
+===================== */
+async function loadBalance() {
+  const employeeId = localStorage.getItem("employeeId");
+  const type = leaveType.value;
+
+  balance.value = "Loading…";
 
   const res = await fetch(
-    `${SCRIPT_URL}?action=getEmployeeBalance&employeeId=${employeeId}&leaveType=${leaveType}`
+    `${SCRIPT_URL}?action=getEmployeeBalance&employeeId=${employeeId}&leaveType=${type}`
   );
   const data = await res.json();
 
@@ -103,8 +116,10 @@ let availableBalanceHours = 0;
   }
 
   availableBalanceHours = data.balanceHours;
-  balance.value = `${leaveType} Balance: ${availableBalanceHours} hours`;
-})();
+  balance.value = `${type} Balance: ${availableBalanceHours} hours`;
+
+  calculateTotal();
+}
 
 /* =====================
    HOURS PER DAY
@@ -112,16 +127,16 @@ let availableBalanceHours = 0;
 function setHours(hours, btn) {
   hoursPerDay = hours;
 
-  document
-    .querySelectorAll(".leave-btn")
+  document.querySelectorAll(".leave-btn")
     .forEach(b => b.classList.remove("active"));
 
   btn.classList.add("active");
+
   calculateTotal();
 }
 
 /* =====================
-   TOTAL HOURS CALC
+   TOTAL HOURS
 ===================== */
 ["startDate", "endDate"].forEach(id =>
   document.getElementById(id).addEventListener("change", calculateTotal)
@@ -163,8 +178,7 @@ function submitLeave() {
   const payload = {
     action: "submitLeave",
     employeeId: localStorage.getItem("employeeId"),
-    employeeName: localStorage.getItem("employeeName"),
-    leaveType: localStorage.getItem("leaveType"),
+    leaveType: leaveType.value,
     startDate: startDate.value,
     endDate: endDate.value,
     hoursPerDay,
