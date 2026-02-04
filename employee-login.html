@@ -94,7 +94,8 @@ function contactAdmin() {
 }
 
 /* Send token to Apps Script */
-function verifyEmployee(idToken) {
+function verifyEmployee(idToken) 
+	console.log("TOKEN RECEIVED:", token.substring(0, 20));
   const body = new URLSearchParams({
     action: "verifyEmployeeGoogle",
     token: idToken
@@ -104,30 +105,32 @@ function verifyEmployee(idToken) {
     method: "POST",
     body: body
   })
-	.then(data => {
-	console.log("DEBUG DATA:", data);
+    .then(res => res.json()) // 🔑 THIS WAS MISSING
+    .then(data => {
+      console.log("DEBUG DATA:", data);
 
-	if (!data.success) {
-		alert(
-		"Login failed:\n" +
-		JSON.stringify(data.debug, null, 2)
-		);
-		resetLoginUI();
-		return;
-	}
+      if (!data.success) {
+        alert(
+          "Login failed:\n" +
+          JSON.stringify(data.debug || data, null, 2)
+        );
+        resetLoginUI();
+        return;
+      }
 
-    localStorage.setItem("employeeId", data.employee.id);
-    localStorage.setItem("employeeName", data.employee.name);
-    localStorage.setItem("employeeEmail", data.employee.email);
+      localStorage.setItem("employeeId", data.employee.id);
+      localStorage.setItem("employeeName", data.employee.name);
+      localStorage.setItem("employeeEmail", data.employee.email);
 
-    window.location.href = "employee-dashboard.html";
-  })
-  .catch(err => {
-    console.error("LOGIN ERROR:", err);
-    alert("Login failed. Please try again.");
-    resetLoginUI();
-  });
+      window.location.href = "employee-dashboard.html";
+    })
+    .catch(err => {
+      console.error("LOGIN ERROR:", err);
+      alert("Login failed. Please try again.");
+      resetLoginUI();
+    });
 }
+
 
 function resetLoginUI() {
   document.getElementById("googleBtn").classList.remove("hidden");
