@@ -7,6 +7,7 @@
 </head>
 <body>
 
+<!-- BACK BUTTON -->
 <div class="admin-icon" onclick="goBack()">Back</div>
 
 <!-- HEADER -->
@@ -43,7 +44,7 @@ const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbz4zMRShI6IwL7ehez3Q9VX_ysMQb3Otv__59tgoe5-91zfEN1THvLSJjty_TCN24Wp/exec";
 
 /* =========================
-   AUTH
+   AUTH GUARD
 ========================= */
 if (localStorage.getItem("isAdmin") !== "true") {
   window.location.replace("admin-login.html");
@@ -61,32 +62,39 @@ const emptyState = document.getElementById("no-requests");
 fetch(SCRIPT_URL + "?action=getPendingLeaves")
   .then(res => res.json())
   .then(data => {
-    if (!data.success || data.leaves.length === 0) {
+    if (!data.success || !data.leaves || data.leaves.length === 0) {
       emptyState.style.display = "block";
       return;
     }
 
     data.leaves.forEach(l => {
-      const days = calculateDays(l.start, l.end);
+      const days = calculateDays(l.startDate, l.endDate);
 
       const card = document.createElement("div");
       card.className = "request-card";
 
       card.innerHTML = `
-        <div class="request-header">
-          <div class="employee-name">${l.name}</div>
-          <span class="status pending">Pending</span>
-        </div>
-
         <div class="request-body">
-          <div class="leave-type">${l.leaveType} Leave</div>
-          <div class="dates">
-            ${formatDate(l.start)} → ${formatDate(l.end)}
-            <span class="days">(${days} days)</span>
-          </div>
-          <div class="balance">${l.hoursRequested} hours requested</div>
-          <div class="reason">Reason: ${l.reason || "-"}</div>
-        </div>
+  <div class="request-top">
+    <div class="employee-name">${l.employeeName}</div>
+    <span class="status-badge pending">Pending</span>
+  </div>
+
+  <div class="meta">
+    <span class="pill">${l.leaveType} Leave</span>
+    <span class="pill">${l.totalHours} hrs</span>
+  </div>
+
+  <div class="dates">
+    📅 ${formatDate(l.startDate)} → ${formatDate(l.endDate)}
+    <span class="days">(${days} day${days > 1 ? "s" : ""})</span>
+  </div>
+
+  <div class="reason">
+    <strong>Reason:</strong> ${l.reason || "-"}
+  </div>
+</div>
+
 
         <div class="request-actions">
           <button class="primary-btn"
@@ -103,6 +111,9 @@ fetch(SCRIPT_URL + "?action=getPendingLeaves")
 
       container.appendChild(card);
     });
+  })
+  .catch(() => {
+    emptyState.style.display = "block";
   });
 
 /* =========================
@@ -117,11 +128,14 @@ function updateStatus(rowIndex, status, btn) {
   formData.append("status", status);
   formData.append("adminName", localStorage.getItem("adminName"));
 
-  fetch(SCRIPT_URL, { method: "POST", body: formData })
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: formData
+  })
     .then(res => res.json())
     .then(data => {
       if (!data.success) {
-        alert("Failed to update status");
+        alert("Failed to update leave status");
         btn.disabled = false;
         return;
       }
@@ -132,7 +146,11 @@ function updateStatus(rowIndex, status, btn) {
         emptyState.style.display = "block";
       }
 
-      showModal("Leave request " + status);
+      showModal(`Leave request ${status}`);
+    })
+    .catch(() => {
+      alert("Server error");
+      btn.disabled = false;
     });
 }
 
@@ -146,7 +164,13 @@ function formatDate(d) {
 function calculateDays(start, end) {
   const s = new Date(start);
   const e = new Date(end);
-  return Math.round((e - s) / 86400000) + 1;
+  let days = 0;
+
+  for (let d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {
+    const day = d.getDay();
+    if (day !== 0 && day !== 6) days++;
+  }
+  return days;
 }
 
 function showModal(msg) {
@@ -159,13 +183,8 @@ function closeModal() {
 }
 
 function goBack() {
-  if (document.referrer) {
-    window.history.back();
-  } else {
-    window.location.href = "admin-dashboard.html";
-  }
+  window.location.href = "admin-dashboard.html";
 }
-
 </script>
 
 </body>

@@ -480,8 +480,6 @@ body.no-center {
   transform: translateY(-2px);
 }
 
-========================================================
-
 .employee-photo-wrapper {
   display: flex;
   justify-content: center;
@@ -801,6 +799,140 @@ body.no-center {
   box-shadow: 0 6px 18px rgba(31, 78, 216, 0.45);
 }
 
+/* REQUEST CARD */
+.request-card {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  backdrop-filter: blur(8px);
+}
+
+/* HEADER ROW */
+.request-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.employee-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* STATUS BADGE */
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.pending {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+}
+
+/* META PILLS */
+.meta {
+  margin: 10px 0;
+  display: flex;
+  gap: 8px;
+}
+
+.pill {
+  background: rgba(255,255,255,0.08);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+/* DATES */
+.dates {
+  font-size: 14px;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+.days {
+  margin-left: 6px;
+  opacity: 0.7;
+}
+
+/* REASON */
+.reason {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.empty-state {
+  text-align: center;
+  font-size: 16px;
+  opacity: 0.7;
+  margin-top: 80px;
+}
+
+.request-card:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+}
+
+/* =========================================================
+   ADMIN LEAVE SUBMISSION – VISUAL POLISH (SAFE PATCH)
+   Scoped only to request cards
+========================================================= */
+
+/* Slightly tighter card padding for better scanability */
+.request-card {
+  padding: 20px;
+}
+
+/* Emphasize leave type for quick scanning */
+.request-card .leave-type {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* Reason block – subtle container */
+.request-card .reason {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+/* Admin action buttons container */
+.request-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+/* Make Reject feel secondary without redefining it */
+.request-actions .secondary-btn {
+  opacity: 0.85;
+}
+
+.request-actions .secondary-btn:hover {
+  opacity: 1;
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.6);
+}
+
+/* Status badge future-proofing */
+.status-badge.approved {
+  background: rgba(34,197,94,0.15);
+  color: #22c55e;
+}
+
+.status-badge.rejected {
+  background: rgba(239,68,68,0.15);
+  color: #ef4444;
+}
 
 
 
