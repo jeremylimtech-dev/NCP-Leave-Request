@@ -105,7 +105,10 @@ fetch(SCRIPT_URL, {
     token: idToken
   })
 })
-    .then(res => res.json())
+    .then(res => res.text())
+.then(text => {
+  console.log("RAW RESPONSE:", text);
+  const data = JSON.parse(text);
     .then(data => {
       if (!data.success) {
         alert("Access denied. Email not registered.");
