@@ -95,37 +95,39 @@ function contactAdmin() {
 
 /* Send token to Apps Script */
 function verifyEmployee(idToken) {
-fetch(SCRIPT_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    action: "verifyEmployeeGoogle",
-    token: idToken
-  })
-})
-    .then(res => res.text())
-.then(text => {
-  console.log("RAW RESPONSE:", text);
-  const data = JSON.parse(text);
-    .then(data => {
-      if (!data.success) {
-        alert("Access denied. Email not registered.");
-        resetLoginUI();
-        return;
-      }
-
-      localStorage.setItem("employeeId", data.employee.id);
-      localStorage.setItem("employeeName", data.employee.name);
-      localStorage.setItem("employeeEmail", data.employee.email);
-
-      window.location.href = "employee-dashboard.html";
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      action: "verifyEmployeeGoogle",
+      token: idToken
     })
-    .catch(() => {
-      alert("Login failed. Please try again.");
+  })
+  .then(res => res.text())
+  .then(text => {
+    console.log("RAW RESPONSE:", text);
+
+    const data = JSON.parse(text);
+
+    if (!data.success) {
+      alert("Access denied. Email not registered.");
       resetLoginUI();
-    });
+      return;
+    }
+
+    localStorage.setItem("employeeId", data.employee.id);
+    localStorage.setItem("employeeName", data.employee.name);
+    localStorage.setItem("employeeEmail", data.employee.email);
+
+    window.location.href = "employee-dashboard.html";
+  })
+  .catch(err => {
+    console.error("LOGIN ERROR:", err);
+    alert("Login failed. Please try again.");
+    resetLoginUI();
+  });
 }
 
 function resetLoginUI() {
