@@ -95,15 +95,14 @@ function contactAdmin() {
 
 /* Send token to Apps Script */
 function verifyEmployee(idToken) {
+  const body = new URLSearchParams({
+    action: "verifyEmployeeGoogle",
+    token: idToken
+  });
+
   fetch(SCRIPT_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      action: "verifyEmployeeGoogle",
-      token: idToken
-    })
+    body: body
   })
   .then(res => res.text())
   .then(text => {
