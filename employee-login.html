@@ -139,7 +139,7 @@ function verifyEmployee(idToken) {
       sessionStorage.setItem("employeeToken", idToken);
 
       // ✅ Single redirect
-      window.location.href = "leavehistory.html";
+      window.location.href = "employee-dashboard.html";
     })
     .catch(err => {
       console.error("LOGIN ERROR:", err);
@@ -160,3 +160,4 @@ function resetLoginUI() {
 </body>
 
 </html>
+
