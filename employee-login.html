@@ -126,13 +126,16 @@ function verifyEmployee(idToken) {
       console.log("DEBUG DATA:", data);
 
       if (!data.success) {
-        alert(
-          "Login failed:\n" +
-          JSON.stringify(data.debug || data, null, 2)
-        );
-        resetLoginUI();
-        return;
-      }
+		let message = "Login failed. Please try again.";
+
+	  if (data.message === "Employee not found") {
+			message = "Employee not found. Please contact admin.";
+		}
+
+			alert(message);
+			resetLoginUI();
+		return;
+		}
 
       localStorage.setItem("employeeId", data.employee.id);
       localStorage.setItem("employeeName", data.employee.name);
