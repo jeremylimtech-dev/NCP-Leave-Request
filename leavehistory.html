@@ -24,6 +24,10 @@
 </div>
 
 <script>
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbz4zMRShI6IwL7ehez3Q9VX_ysMQb3Otv__59tgoe5-91zfEN1THvLSJjty_TCN24Wp/exec";
+
+
 const token = sessionStorage.getItem("employeeToken");
 
 if (!token) {
@@ -78,7 +82,6 @@ fetch(SCRIPT_URL, {
     document.getElementById("historyLoading").textContent =
       "Failed to load leave history";
   });
-  
   
 </script>
 
