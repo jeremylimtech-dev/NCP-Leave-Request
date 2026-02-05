@@ -147,10 +147,10 @@ function openEmployee(id) {
       avatar.src =
         data.employee.photo && data.employee.photo.trim()
           ? data.employee.photo
-          : "default-avatar.png";
+          : "avatar.png";
 
       avatar.onerror = () => {
-        avatar.src = "default-avatar.png";
+        avatar.src = "avatar.png";
       };
 
       loader.classList.remove("show");
@@ -192,3 +192,4 @@ function viewDetails() {
 
 </body>
 </html>
+
