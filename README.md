@@ -8,11 +8,10 @@ This system allows employees to submit leave requests and administrators to appr
 ## 🚀 Live Demo
 
 - **Employee Portal:**  
-  https://bit.ly/ncpleaverequestform
-  https://jeremylimtech-dev.github.io/NCP-Leave-Request/
+  https://ncpvirtualsolutions.org/
 
 - **Admin Login:**  
-  https://jeremylimtech-dev.github.io/NCP-Leave-Request/admin-login.html
+  https://ncpvirtualsolutions.org/admin-login.html
 
 ---
 
