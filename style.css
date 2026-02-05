@@ -934,6 +934,13 @@ body.no-center {
   color: #ef4444;
 }
 
+.request-card {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
 
-
+.primary-btn:disabled,
+.secondary-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 

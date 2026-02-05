@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <title>Leave Submissions</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="/ncpicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/ncpicon.ico" type="image/x-icon">
 </head>
 <body>
 
@@ -120,7 +122,14 @@ fetch(SCRIPT_URL + "?action=getPendingLeaves")
    UPDATE STATUS
 ========================= */
 function updateStatus(rowIndex, status, btn) {
+  // visual feedback immediately
   btn.disabled = true;
+  const originalText = btn.innerText;
+  btn.innerText = status === "Approved" ? "Approving…" : "Rejecting…";
+  btn.style.opacity = "0.8";
+
+  const card = btn.closest(".request-card");
+  card.style.opacity = "0.85";
 
   const formData = new FormData();
   formData.append("action", "updateLeaveStatus");
@@ -128,31 +137,42 @@ function updateStatus(rowIndex, status, btn) {
   formData.append("status", status);
   formData.append("adminName", localStorage.getItem("adminName"));
 
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    body: formData
-  })
+  fetch(SCRIPT_URL, { method: "POST", body: formData })
     .then(res => res.json())
     .then(data => {
       if (!data.success) {
-        alert("Failed to update leave status");
+        // rollback UI if failed
         btn.disabled = false;
+        btn.innerText = originalText;
+        btn.style.opacity = "1";
+        card.style.opacity = "1";
+        alert("Failed to update leave status");
         return;
       }
 
-      btn.closest(".request-card").remove();
+      // success animation
+      card.style.transform = "scale(0.98)";
+      card.style.opacity = "0";
 
-      if (container.children.length === 0) {
+      setTimeout(() => {
+        card.remove();
+      }, 250);
+
+      if (container.children.length === 1) {
         emptyState.style.display = "block";
       }
 
-      showModal(`Leave request ${status}`);
+      showModal(`Leave ${status.toLowerCase()}`);
     })
     .catch(() => {
-      alert("Server error");
       btn.disabled = false;
+      btn.innerText = originalText;
+      btn.style.opacity = "1";
+      card.style.opacity = "1";
+      alert("Server error");
     });
 }
+
 
 /* =========================
    HELPERS

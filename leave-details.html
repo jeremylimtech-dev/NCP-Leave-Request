@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <title>Leave Details</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="/ncpicon.ico" type="image/x-icon">
+ <link rel="shortcut icon" href="/ncpicon.ico" type="image/x-icon">
 </head>
 <body>
 
@@ -200,20 +202,40 @@ function calculateTotal() {
 /* =====================
    SUBMIT
 ===================== */
+let submitting = false;
+
 function submitLeave() {
+  // 🚫 prevent double submit
+  if (submitting) return;
+  submitting = true;
+
+  const submitBtn = document.querySelector(".primary-btn");
+
+  // basic validation
   if (!startDate.value || !endDate.value || !reason.value.trim()) {
     alert("Please complete all fields.");
+    submitting = false;
     return;
   }
 
   const total = Number(totalHours.value.replace(" hours", ""));
   const type = leaveType.value;
 
-  // ✅ BLOCK ONLY PAID LEAVES
+  // 🔄 loading state
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Submitting…";
+  submitBtn.style.opacity = "0.85";
+
+  // 💰 balance check (paid leaves only)
   if (type !== "Unpaid" && total > availableBalanceHours) {
     alert(
       `Insufficient balance.\n\nRequested: ${total} hours\nAvailable: ${availableBalanceHours} hours`
     );
+
+    submitBtn.disabled = false;
+    submitBtn.innerText = "Submit";
+    submitBtn.style.opacity = "1";
+    submitting = false;
     return;
   }
 
@@ -236,12 +258,32 @@ function submitLeave() {
     .then(data => {
       if (!data.success) {
         alert(data.message || "Submission failed.");
+
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Submit";
+        submitBtn.style.opacity = "1";
+        submitting = false;
         return;
       }
-      window.location.href = "submitted.html";
+
+      // ✅ success feedback
+      submitBtn.innerText = "Submitted ✓";
+      submitBtn.style.background = "#22c55e";
+
+      setTimeout(() => {
+        window.location.href = "submitted.html";
+      }, 600);
     })
-    .catch(() => alert("Submission failed. Please try again."));
+    .catch(() => {
+      alert("Submission failed. Please try again.");
+
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Submit";
+      submitBtn.style.opacity = "1";
+      submitting = false;
+    });
 }
+
 </script>
 
 </body>
