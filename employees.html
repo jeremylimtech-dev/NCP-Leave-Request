@@ -82,9 +82,11 @@ fetch(`${SCRIPT_URL}?action=getEmployees`)
       grid.style.display = "grid";
 
       if (data.employees.length === 0) {
-        pageLoader.style.display = "flex";
-        pageLoader.querySelector(".loading-text").textContent =
-          "No employees found";
+        employeeGrid.innerHTML = `
+        <div class="employee-btn add-employee" onclick="addEmployee()">
+          + Add Employee
+        </div>
+		`;
         return;
       }
 
