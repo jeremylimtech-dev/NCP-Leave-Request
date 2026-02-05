@@ -108,8 +108,6 @@ window.onload = function () {
    VERIFY EMPLOYEE
 ===================== */
 function verifyEmployee(idToken) {
-  console.log("TOKEN RECEIVED:", idToken.substring(0, 20));
-
   const body = new URLSearchParams({
     action: "verifyEmployeeGoogle",
     token: idToken
@@ -117,29 +115,31 @@ function verifyEmployee(idToken) {
 
   fetch(SCRIPT_URL, {
     method: "POST",
-    body: body
+    body
   })
     .then(res => res.json())
     .then(data => {
-      console.log("DEBUG DATA:", data);
-
       if (!data.success) {
-		let message = "Login failed. Please try again.";
+        let message = "Login failed. Please try again.";
 
-	  if (data.message === "Employee not found") {
-			message = "Employee not found. Please contact admin.";
-		}
+        if (data.message === "Employee not found") {
+          message = "Employee not found. Please contact admin.";
+        }
 
-			alert(message);
-			resetLoginUI();
-		return;
-		}
+        alert(message);
+        resetLoginUI();
+        return;
+      }
 
-      localStorage.setItem("employeeId", data.employee.id);
+      // Optional display data
       localStorage.setItem("employeeName", data.employee.name);
       localStorage.setItem("employeeEmail", data.employee.email);
 
-      window.location.href = "employee-dashboard.html";
+      // 🔐 AUTH TOKEN (CRITICAL)
+      sessionStorage.setItem("employeeToken", idToken);
+
+      // ✅ Single redirect
+      window.location.href = "leavehistory.html";
     })
     .catch(err => {
       console.error("LOGIN ERROR:", err);
@@ -158,4 +158,5 @@ function resetLoginUI() {
 </script>
 
 </body>
+
 </html>
