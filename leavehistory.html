@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NCP Bookkeeping</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/ncpicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/ncpicon.ico" type="image/x-icon">
+</head>
+<body>
+<div class="container leave-card">
+  <h1>My Leave History</h1>
+
+  <div id="historyLoading" class="google-loading">
+    <div class="page-spinner"></div>
+    Loading your leave history…
+  </div>
+
+  <div id="leaveList"></div>
+
+  <div id="emptyState" class="empty-state hidden">
+    No leave records found.
+  </div>
+</div>
+
+<script>
+
+const employeeId = new URLSearchParams(window.location.search).get("id");
+
+fetch(`${SCRIPT_URL}?action=getLeaveHistory&employeeId=${employeeId}`)
+  .then(res => res.json())
+  .then(res => {
+    document.getElementById("historyLoading").classList.add("hidden");
+
+    if (!res.success || res.data.length === 0) {
+      document.getElementById("emptyState").classList.remove("hidden");
+      return;
+    }
+
+    const list = document.getElementById("leaveList");
+
+    res.data.forEach(l => {
+      const card = document.createElement("div");
+      card.className = "request-card";
+
+      card.innerHTML = `
+        <div class="request-top">
+          <div class="leave-type">${l.type}</div>
+          <span class="status-badge ${l.status.toLowerCase()}">
+            ${l.status}
+          </span>
+        </div>
+
+        <div class="dates">
+          ${l.start} → ${l.end}
+        </div>
+
+        <div class="reason">${l.reason}</div>
+      `;
+
+      list.appendChild(card);
+    });
+  });
+
+
+</script>
+
+</body>
+</html>
