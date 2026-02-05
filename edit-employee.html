@@ -103,7 +103,7 @@
         document.getElementById("annualLeave").value = e.annual;
         document.getElementById("sickLeave").value = e.sick;
         document.getElementById("email").value = e.email;
-        document.getElementById("contact").value = e.contact || "";
+        document.getElementById("contact").value = e.contact;
 
         document.getElementById("employeeNameDisplay").textContent = e.name;
         document.getElementById("employeePhoto").src =
@@ -133,6 +133,9 @@
 
       fetch(SCRIPT_URL, {
         method: "POST",
+		headers: {
+			"Content-Type"; "application/json"
+		},
         body: JSON.stringify(payload)
       })
         .then(res => res.json())
