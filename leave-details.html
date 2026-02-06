@@ -103,11 +103,15 @@ let availableBalanceHours = 0;
   const name = localStorage.getItem("employeeName");
 
   if (!token || !name) {
+    alert("Session expired. Please login again.");
     window.location.replace("employee-login.html");
     return;
   }
 
+  // populate employee name
   document.getElementById("employeeName").value = name;
+
+  // initial balance load
   await loadBalance();
 });
 
