@@ -9,6 +9,13 @@
 </head>
 <body>
 
+<div id="loadingState" class="loading-state">
+  <div class="page-spinner"></div>
+  <p>Loading employee details…</p>
+</div>
+
+<div id="leavePage" class="hidden">
+  <div class="container leave-card">
 <div class="container leave-card">
   <h1 class="card-title">Leave Details</h1>
 
@@ -87,9 +94,15 @@
   </p>
 </div>
 
+</div>
+</div>
+
 <script>
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbz4zMRShI6IwL7ehez3Q9VX_ysMQb3Otv__59tgoe5-91zfEN1THvLSJjty_TCN24Wp/exec";
+
+const loadingState = document.getElementById("loadingState");
+const leavePage = document.getElementById("leavePage");
 
 let hoursPerDay = 8;
 let availableBalanceHours = 0;
@@ -97,16 +110,29 @@ let availableBalanceHours = 0;
 /* =====================
    INIT (CORRECT)
 ===================== */
-const token = localStorage.getItem("employeeToken");
-const name = localStorage.getItem("employeeName");
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("employeeToken");
+  const name = localStorage.getItem("employeeName");
 
-if (!token || !name) {
-  alert("Session expired. Please login again.");
-  window.location.replace("employee-login.html");
-} else {
+  if (!token || !name) {
+    alert("Session expired. Please login again.");
+    window.location.replace("employee-login.html");
+    return;
+  }
+
+  // Keep loading visible
+  loadingState.classList.remove("hidden");
+  leavePage.classList.add("hidden");
+
   document.getElementById("employeeName").value = name;
-  loadBalance(); // 🔥 THIS WAS NEVER RUNNING BEFORE
-}
+
+  await loadBalance(); // 🔑 waits for data
+
+  // Show page only AFTER data
+  loadingState.classList.add("hidden");
+  leavePage.classList.remove("hidden");
+});
+
 
 /* =====================
    SET LEAVE TYPE
