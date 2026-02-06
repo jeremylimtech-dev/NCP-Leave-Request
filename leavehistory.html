@@ -29,7 +29,7 @@ const SCRIPT_URL =
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  const token = sessionStorage.getItem("employeeToken");
+  const token = localStorage.getItem("employeeToken");
 
   if (!token) {
     window.location.replace("employee-login.html");

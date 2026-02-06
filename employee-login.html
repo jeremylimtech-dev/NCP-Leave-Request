@@ -141,7 +141,7 @@ function verifyEmployee(idToken) {
       localStorage.setItem("employeeEmail", data.employee.email);
 
       // 🔐 AUTH TOKEN (CRITICAL)
-      sessionStorage.setItem("employeeToken", idToken);
+      localStorage.setItem("employeeToken", idToken);
 
       // ✅ Single redirect
       window.location.href = "employee-dashboard.html";

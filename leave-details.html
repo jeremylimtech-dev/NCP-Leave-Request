@@ -98,18 +98,18 @@ let availableBalanceHours = 0;
    INIT
 ===================== */
 (async function init() {
-  const employeeId = localStorage.getItem("employeeId");
+  document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("employeeToken");
   const name = localStorage.getItem("employeeName");
 
-  if (!employeeId || !name) {
-    alert("Session expired. Please login again.");
-    window.location.href = "employee-login.html";
+  if (!token || !name) {
+    window.location.replace("employee-login.html");
     return;
   }
 
   employeeName.value = name;
   await loadBalance();
-})();
+});
 
 /* =====================
    SET LEAVE TYPE
@@ -130,10 +130,9 @@ function setLeaveType(type, btn) {
    LOAD BALANCE
 ===================== */
 async function loadBalance() {
-  const employeeId = localStorage.getItem("employeeId");
+  const token = sessionStorage.getItem("employeeToken");
   const type = leaveType.value;
 
-  // ✅ UNPAID = UNLIMITED
   if (type === "Unpaid") {
     availableBalanceHours = Infinity;
     balance.value = "Unpaid Leave: Unlimited";
@@ -143,9 +142,15 @@ async function loadBalance() {
 
   balance.value = "Loading…";
 
-  const res = await fetch(
-    `${SCRIPT_URL}?action=getEmployeeBalance&employeeId=${employeeId}&leaveType=${type}`
-  );
+  const res = await fetch(SCRIPT_URL, {
+    method: "POST",
+    body: new URLSearchParams({
+      action: "getEmployeeBalanceSecure",
+      token,
+      leaveType: type
+    })
+  });
+
   const data = await res.json();
 
   if (!data.success) {
@@ -239,16 +244,17 @@ function submitLeave() {
     return;
   }
 
-  const payload = {
-    action: "submitLeave",
-    employeeId: localStorage.getItem("employeeId"),
-    leaveType: type,
-    startDate: startDate.value,
-    endDate: endDate.value,
-    hoursPerDay,
-    totalHours: total,
-    reason: reason.value.trim()
-  };
+	const payload = {
+	action: "submitLeaveSecure",
+	token: sessionStorage.getItem("employeeToken"),
+	leaveType: type,
+	startDate: startDate.value,
+	endDate: endDate.value,
+	hoursPerDay,
+	totalHours: total,
+	reason: reason.value.trim()
+	};
+
 
   fetch(SCRIPT_URL, {
     method: "POST",

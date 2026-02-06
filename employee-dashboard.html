@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =====================
      AUTH GUARD
   ===================== */
-  const token = sessionStorage.getItem("employeeToken");
+  const token = localStorage.getItem("employeeToken");
 
   if (!token) {
     window.location.replace("employee-login.html");
@@ -75,13 +75,12 @@ function goMyLeaves() {
 }
 
 function logout() {
-  // ✅ CLEAR CORRECT STORAGE
-  sessionStorage.removeItem("employeeToken");
+  localStorage.removeItem("employeeToken");
   localStorage.removeItem("employeeName");
   localStorage.removeItem("employeeEmail");
-
-  window.location.replace("employee-login.html");
+  window.location.href = "employee-login.html";
 }
+
 </script>
 
 </body>
