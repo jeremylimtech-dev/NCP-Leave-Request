@@ -27,7 +27,6 @@
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbz4zMRShI6IwL7ehez3Q9VX_ysMQb3Otv__59tgoe5-91zfEN1THvLSJjty_TCN24Wp/exec";
 
-
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("employeeToken");
 
@@ -36,21 +35,18 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    body: new URLSearchParams({
-      action: "getLeaveHistorySecure",
-      token
-    })
-  })
+  fetch(`${SCRIPT_URL}?action=getLeaveHistorySecure&token=${encodeURIComponent(token)}`)
     .then(res => res.json())
     .then(res => {
       document.getElementById("historyLoading").classList.add("hidden");
 
-      if (!res.success || res.data.length === 0) {
+      if (!res.success || !res.data || res.data.length === 0) {
         document.getElementById("emptyState").classList.remove("hidden");
         return;
       }
+
+      // 🔽 Latest first
+      res.data.sort((a, b) => new Date(b.start) - new Date(a.start));
 
       const list = document.getElementById("leaveList");
       list.innerHTML = "";
@@ -77,15 +73,13 @@ document.addEventListener("DOMContentLoaded", () => {
         list.appendChild(card);
       });
     })
-    .catch(() => {
+    .catch(err => {
+      console.error(err);
       document.getElementById("historyLoading").textContent =
         "Failed to load leave history";
     });
 });
-
-  
 </script>
-
-
 </body>
 </html>
+
