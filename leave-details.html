@@ -276,9 +276,6 @@ function submitLeave() {
 
   fetch(SCRIPT_URL, {
   method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
   body: JSON.stringify(payload)
 })
     .then(res => res.json())
@@ -315,4 +312,5 @@ function submitLeave() {
 
 </body>
 </html>
+
 
