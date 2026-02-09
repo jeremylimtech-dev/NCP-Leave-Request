@@ -276,7 +276,16 @@ function submitLeave() {
 
   fetch(SCRIPT_URL, {
   method: "POST",
-  body: JSON.stringify(payload)
+  body: new URLSearchParams({
+    action: "submitLeaveSecure",
+    token: localStorage.getItem("employeeToken"),
+    leaveType: type,
+    startDate: startDate.value,
+    endDate: endDate.value,
+    hoursPerDay,
+    totalHours: total,
+    reason: reason.value.trim()
+  })
 })
     .then(res => res.json())
     .then(data => {
@@ -312,5 +321,6 @@ function submitLeave() {
 
 </body>
 </html>
+
 
 
