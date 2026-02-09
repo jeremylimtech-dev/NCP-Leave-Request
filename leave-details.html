@@ -275,9 +275,12 @@ function submitLeave() {
 
 
   fetch(SCRIPT_URL, {
-    method: "POST",
-    body: new URLSearchParams(payload)
-  })
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+})
     .then(res => res.json())
     .then(data => {
       if (!data.success) {
@@ -312,3 +315,4 @@ function submitLeave() {
 
 </body>
 </html>
+
