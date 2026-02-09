@@ -8,6 +8,9 @@
   <link rel="shortcut icon" href="/ncpicon.ico" type="image/x-icon">
 </head>
 <body>
+  <!-- BACK BUTTON -->
+<div class="admin-icon" onclick="goBack()">Back</div>
+  
 <div class="container leave-card">
   <h1>My Leave History</h1>
 
@@ -79,7 +82,12 @@ document.addEventListener("DOMContentLoaded", () => {
         "Failed to load leave history";
     });
 });
+
+  function goBack() {
+  window.location.href = "employee-dashboard.html";
+}
 </script>
 </body>
 </html>
+
 
