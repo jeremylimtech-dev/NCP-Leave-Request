@@ -13,6 +13,8 @@
   <div class="page-spinner"></div>
   <p>Loading employee details…</p>
 </div>
+  <!-- BACK BUTTON -->
+<div class="admin-icon" onclick="goBack()">Back</div>
 
 <div id="leavePage" class="hidden">
 <div class="container leave-card">
@@ -317,10 +319,14 @@ function submitLeave() {
     });
 }
 
+function goBack() {
+  window.location.href = "employee-dashboard.html";
+}
 </script>
 
 </body>
 </html>
+
 
 
 
