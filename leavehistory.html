@@ -38,7 +38,15 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  fetch(`${SCRIPT_URL}?action=getLeaveHistorySecure&token=${encodeURIComponent(token)}`)
+  const payload = new URLSearchParams({
+    action: "getLeaveHistorySecure",
+    token
+  });
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: payload
+  })
     .then(res => res.json())
     .then(res => {
       document.getElementById("historyLoading").classList.add("hidden");
@@ -48,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // 🔽 Latest first
+      // 🔽 latest first
       res.data.sort((a, b) => new Date(b.start) - new Date(a.start));
 
       const list = document.getElementById("leaveList");
@@ -70,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ${l.start} → ${l.end}
           </div>
 
-          <div class="reason">${l.reason}</div>
+          <div class="reason">${l.reason || "-"}</div>
         `;
 
         list.appendChild(card);
@@ -83,11 +91,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-  function goBack() {
+function goBack() {
   window.location.href = "employee-dashboard.html";
 }
 </script>
+
 </body>
 </html>
+
 
 
