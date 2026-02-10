@@ -8,9 +8,10 @@
   <link rel="shortcut icon" href="/ncpicon.ico" type="image/x-icon">
 </head>
 <body>
-  <!-- BACK BUTTON -->
+
+<!-- BACK BUTTON -->
 <div class="admin-icon" onclick="goBack()">Back</div>
-  
+
 <div class="container leave-card">
   <h1>My Leave History</h1>
 
@@ -56,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // 🔽 latest first
+      // Latest first
       res.data.sort((a, b) => new Date(b.start) - new Date(a.start));
 
       const list = document.getElementById("leaveList");
@@ -98,6 +99,3 @@ function goBack() {
 
 </body>
 </html>
-
-
-
