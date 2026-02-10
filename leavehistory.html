@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Latest first
+      // ✅ Latest first
       res.data.sort((a, b) => new Date(b.start) - new Date(a.start));
 
       const list = document.getElementById("leaveList");
@@ -67,19 +67,29 @@ document.addEventListener("DOMContentLoaded", () => {
         const card = document.createElement("div");
         card.className = "request-card";
 
+        const start = formatDate(l.start);
+        const end = formatDate(l.end);
+        const sameDay = start === end;
+
         card.innerHTML = `
           <div class="request-top">
-            <div class="leave-type">${l.type}</div>
+            <div class="leave-type">${l.type} Leave</div>
             <span class="status-badge ${l.status.toLowerCase()}">
               ${l.status}
             </span>
           </div>
 
           <div class="dates">
-            ${l.start} → ${l.end}
+            📅 ${sameDay ? start : `${start} → ${end}`}
           </div>
 
-          <div class="reason">${l.reason || "-"}</div>
+          <div class="meta">
+            <span class="pill">${l.hours} hrs</span>
+          </div>
+
+          <div class="reason">
+            ${l.reason || "—"}
+          </div>
         `;
 
         list.appendChild(card);
@@ -92,6 +102,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  });
+}
+
 function goBack() {
   window.location.href = "employee-dashboard.html";
 }
@@ -99,3 +118,4 @@ function goBack() {
 
 </body>
 </html>
+
