@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NCP Bookkeeping</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/ncpicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/ncpicon.ico" type="image/x-icon">
+</head>
+<body>
+
+<!-- BACK BUTTON -->
+<div class="admin-icon" onclick="goBack()">Back</div>
+
+<div class="container leave-card">
+  <h1>My Leave History</h1>
+
+  <div id="historyLoading" class="google-loading">
+    <div class="page-spinner"></div>
+    Loading your leave history…
+  </div>
+
+  <div id="leaveList"></div>
+
+  <div id="emptyState" class="empty-state hidden">
+    No leave records found.
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbz4zMRShI6IwL7ehez3Q9VX_ysMQb3Otv__59tgoe5-91zfEN1THvLSJjty_TCN24Wp/exec";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem("employeeToken");
+
+  if (!token) {
+    window.location.replace("employee-login.html");
+    return;
+  }
+
+  const payload = new URLSearchParams({
+    action: "getLeaveHistorySecure",
+    token
+  });
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: payload
+  })
+    .then(res => res.json())
+    .then(res => {
+      document.getElementById("historyLoading").classList.add("hidden");
+
+      if (!res.success || !res.data || res.data.length === 0) {
+        document.getElementById("emptyState").classList.remove("hidden");
+        return;
+      }
+
+      // ✅ Latest first
+      res.data.sort((a, b) => new Date(b.start) - new Date(a.start));
+
+      const list = document.getElementById("leaveList");
+      list.innerHTML = "";
+
+      res.data.forEach(l => {
+        const card = document.createElement("div");
+        card.className = "request-card";
+
+        const start = formatDate(l.start);
+        const end = formatDate(l.end);
+        const sameDay = start === end;
+
+        card.innerHTML = `
+          <div class="request-top">
+            <div class="leave-type">${l.type} Leave</div>
+            <span class="status-badge ${l.status.toLowerCase()}">
+              ${l.status}
+            </span>
+          </div>
+
+          <div class="dates">
+            📅 ${sameDay ? start : `${start} → ${end}`}
+          </div>
+
+          <div class="meta">
+            <span class="pill">${l.hours} hrs</span>
+          </div>
+
+          <div class="reason">
+            ${l.reason || "—"}
+          </div>
+        `;
+
+        list.appendChild(card);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById("historyLoading").textContent =
+        "Failed to load leave history";
+    });
+});
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  });
+}
+
+function goBack() {
+  window.location.href = "employee-dashboard.html";
+}
+</script>
+
+</body>
+</html>
+

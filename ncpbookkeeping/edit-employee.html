@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Employee</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="/ncpicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/ncpicon.ico" type="image/x-icon">
+</head>
+<body>
+	<!-- Page Loading State -->
+	<div id="pageLoading" class="loading-state hidden">
+	  <div class="page-spinner"></div>
+	  <div>Loading employee data…</div>
+	</div>
+
+  <div class="container edit-employee-card">
+    <h1>Edit Employee</h1>
+
+    <div class="edit-employee-layout">
+
+      <!-- LEFT -->
+      <div class="employee-left">
+        <div class="avatar">
+			<img id="employeePhoto" src="avatar.png" />
+		</div>
+		
+        <div class="employee-name-display" id="employeeNameDisplay">
+          Name
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <form id="editEmployeeForm" class="employee-right">
+
+        <!-- Hidden but still used -->
+        <input type="hidden" id="employeeId" />
+
+        <div class="pill-input">
+          <label>Name</label>
+          <input type="text" id="name" required />
+        </div>
+
+        <div class="pill-input">
+          <label>Employee Type</label>
+          <select id="employeeType">
+            <option value="Full-Time">Full-Time</option>
+            <option value="Part-Time">Part-Time</option>
+          </select>
+        </div>
+
+        <div class="pill-input">
+          <label>Email</label>
+          <input type="email" id="email" />
+        </div>
+
+        <div class="pill-input">
+          <label>Annual Balance</label>
+          <input type="number" step="0.01" id="annualLeave" />
+        </div>
+
+        <div class="pill-input">
+          <label>Contact</label>
+          <input type="text" id="contact" />
+        </div>
+
+        <div class="pill-input">
+          <label>Sick Balance</label>
+          <input type="number" step="0.01" id="sickLeave" />
+        </div>
+
+        <div class="actions edit-actions">
+			<button type="submit" class="primary-btn" id="saveBtn">
+				<span class="btn-text">Save Changes</span>
+ 				<span class="spinner hidden"></span>
+			</button>
+			<a href="employees.html" class="primary-btn cancel-primary">Cancel</a>
+		</div>
+
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL =
+      "https://script.google.com/macros/s/AKfycbz4zMRShI6IwL7ehez3Q9VX_ysMQb3Otv__59tgoe5-91zfEN1THvLSJjty_TCN24Wp/exec";
+
+    const params = new URLSearchParams(window.location.search);
+    const empId = params.get("id");
+
+    if (!empId) {
+      alert("No employee selected");
+      window.location.href = "employees.html";
+    }
+
+    /* LOAD EMPLOYEE */
+    const pageLoading = document.getElementById("pageLoading");
+
+// show page loader
+pageLoading.classList.remove("hidden");
+
+fetch(`${SCRIPT_URL}?action=getEmployee&id=${empId}`)
+  .then(res => res.json())
+  .then(res => {
+    if (!res.success) {
+      alert("Employee not found");
+      window.location.href = "employees.html";
+      return;
+    }
+
+    const e = res.employee;
+
+    document.getElementById("employeeId").value = e.id;
+    document.getElementById("name").value = e.name;
+    document.getElementById("employeeType").value = e.type;
+    document.getElementById("annualLeave").value = e.annual;
+    document.getElementById("sickLeave").value = e.sick;
+    document.getElementById("email").value = e.email;
+    document.getElementById("contact").value = e.contact;
+
+    document.getElementById("employeeNameDisplay").textContent = e.name;
+    document.getElementById("employeePhoto").src = e.photo || "avatar.png";
+  })
+  .catch(() => {
+    alert("Failed to load employee");
+    window.location.href = "employees.html";
+  })
+  .finally(() => {
+    // hide loader
+    pageLoading.classList.add("hidden");
+  });
+
+    /* NAME LIVE UPDATE */
+    document.getElementById("name").addEventListener("input", e => {
+      document.getElementById("employeeNameDisplay").textContent =
+        e.target.value || "Name";
+    });
+
+    /* SAVE */
+    document.getElementById("editEmployeeForm").addEventListener("submit", e => {
+  e.preventDefault();
+
+  const saveBtn = document.getElementById("saveBtn");
+  const btnText = saveBtn.querySelector(".btn-text");
+  const spinner = saveBtn.querySelector(".spinner");
+
+  // enable button loading
+  saveBtn.disabled = true;
+  btnText.textContent = "Saving…";
+  spinner.classList.remove("hidden");
+
+  const payload = new URLSearchParams({
+    action: "updateEmployee",
+    id: document.getElementById("employeeId").value,
+    name: document.getElementById("name").value,
+    employeeType: document.getElementById("employeeType").value,
+    annual: document.getElementById("annualLeave").value,
+    sick: document.getElementById("sickLeave").value,
+    email: document.getElementById("email").value,
+    contact: document.getElementById("contact").value
+  });
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: payload
+  })
+    .then(res => res.json())
+    .then(r => {
+      if (r.success) {
+        alert("Employee updated successfully");
+        window.location.href = "employees.html";
+      } else {
+        throw new Error();
+      }
+    })
+    .catch(() => {
+      alert("Failed to update employee");
+
+      // reset button on failure
+      saveBtn.disabled = false;
+      btnText.textContent = "Save Changes";
+      spinner.classList.add("hidden");
+    });
+});
+
+  </script>
+
+</body>
+</html>
+
+
