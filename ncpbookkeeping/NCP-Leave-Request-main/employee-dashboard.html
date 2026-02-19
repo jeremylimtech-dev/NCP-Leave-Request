@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/ncpicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/ncpicon.ico" type="image/x-icon">
+</head>
+<body>
+
+<!-- Logout button -->
+<div class="admin-icon" onclick="logout()">Logout</div>
+
+<!-- Branding -->
+<div style="position: fixed; top: 20px; left: 30px; z-index: 10;">
+  <div class="brand">
+    <div class="brand-circle">
+      <img src="logo.png" alt="NCP Logo">
+    </div>
+    <span>Employee Dashboard</span>
+  </div>
+</div>
+
+<!-- DASHBOARD CARD -->
+<div class="container">
+
+  <h1 id="employeeName">Employee</h1>
+  <p style="font-size: 13px; opacity: 0.85;" id="employeeEmail"></p>
+
+  <button class="primary-btn" onclick="goApplyLeave()" style="margin-top: 18px;">
+    Apply for Leave
+  </button>
+
+  <button class="primary-btn" onclick="goMyLeaves()" style="margin-top: 10px;">
+    My Leave History
+  </button>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  /* =====================
+     AUTH GUARD
+  ===================== */
+  const token = localStorage.getItem("employeeToken");
+
+  if (!token) {
+    window.location.replace("employee-login.html");
+    return;
+  }
+
+  /* =====================
+     DISPLAY INFO
+  ===================== */
+  const employeeName = localStorage.getItem("employeeName");
+  const employeeEmail = localStorage.getItem("employeeEmail");
+
+  document.getElementById("employeeName").innerText =
+    employeeName || "Employee";
+
+  document.getElementById("employeeEmail").innerText =
+    employeeEmail || "";
+});
+
+/* =====================
+   NAVIGATION
+===================== */
+function goApplyLeave() {
+  window.location.href = "leave-details.html";
+}
+
+function goMyLeaves() {
+  window.location.href = "leavehistory.html";
+}
+
+function logout() {
+  localStorage.removeItem("employeeToken");
+  localStorage.removeItem("employeeName");
+  localStorage.removeItem("employeeEmail");
+  window.location.href = "employee-login.html";
+}
+
+</script>
+
+</body>
+</html>
+
+

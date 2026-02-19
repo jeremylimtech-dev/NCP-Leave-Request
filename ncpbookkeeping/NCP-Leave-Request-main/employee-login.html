@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Login</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/ncpicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/ncpicon.ico" type="image/x-icon">
+
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<div class="admin-icon" onclick="goAdmin()">Admin</div>
+
+<!-- Branding (Top Left) -->
+<div style="position: fixed; top: 20px; left: 30px; z-index: 10;">
+  <div class="brand">
+    <div class="brand-circle">
+      <img src="logo.png" alt="NCP Logo">
+    </div>
+    <span>NCP Bookkeeping</span>
+  </div>
+</div>
+
+<div class="container employee-login-card">
+  <h1>Employee Login</h1>
+
+  <!-- Google button -->
+  <div id="googleBtn" class="google-login-wrapper"></div>
+
+  <p class="login-hint">Sign in using your company email</p>
+
+  <!-- Loading state -->
+  <div id="googleLoading" class="google-loading hidden">
+    <div class="spinner"></div>
+    <p>Signing you in…</p>
+  </div>
+
+  <!-- Helper text -->
+  <p class="login-helper">
+    Not registered? <span onclick="contactAdmin()">Contact admin</span>
+  </p>
+
+  <button class="secondary-btn" onclick="goBack()" style="margin-top: 12px;">
+    Back
+  </button>
+</div>
+
+<script>
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbz4zMRShI6IwL7ehez3Q9VX_ysMQb3Otv__59tgoe5-91zfEN1THvLSJjty_TCN24Wp/exec";
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (sessionStorage.getItem("employeeToken")) {
+    window.location.replace("employee-dashboard.html");
+  }
+});
+
+/* =====================
+   NAVIGATION
+===================== */
+function goBack() {
+  if (document.referrer) {
+    window.location.href = "index.html";
+  }
+}
+
+function goAdmin() {
+  window.location.href = "admin-login.html";
+}
+
+function contactAdmin() {
+  window.location.href = "mailto:admin@ncpbookkeeping.com";
+}
+
+/* =====================
+   GOOGLE LOGIN CALLBACK
+===================== */
+function handleCredentialResponse(response) {
+  // show loading
+  document.getElementById("googleBtn").classList.add("hidden");
+  document.getElementById("googleLoading").classList.remove("hidden");
+	
+  verifyEmployee(response.credential);
+}
+
+/* =====================
+   INIT GOOGLE LOGIN
+===================== */
+window.onload = function () {
+  google.accounts.id.initialize({
+    client_id: "900054162881-dvjja2fq6chqmib71avgsbkrr0es0kt1.apps.googleusercontent.com",
+    callback: handleCredentialResponse,
+    auto_select: false,
+    cancel_on_tap_outside: true
+  });
+
+  google.accounts.id.renderButton(
+    document.getElementById("googleBtn"),
+    {
+      theme: "filled_blue",
+      size: "large",
+      width: 260
+    }
+  );
+};
+
+  // ✅ Force account chooser every time
+
+/* =====================
+   VERIFY EMPLOYEE
+===================== */
+function verifyEmployee(idToken) {
+  const body = new URLSearchParams({
+    action: "verifyEmployeeGoogle",
+    token: idToken
+  });
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        let message = "Login failed. Please try again.";
+
+        if (data.message === "Employee not found") {
+          message = "Employee not found. Please contact admin.";
+        }
+
+        alert(message);
+        resetLoginUI();
+        return;
+      }
+
+      // Optional display data
+      localStorage.setItem("employeeName", data.employee.name);
+      localStorage.setItem("employeeEmail", data.employee.email);
+
+      // 🔐 AUTH TOKEN (CRITICAL)
+      localStorage.setItem("employeeToken", idToken);
+
+      // ✅ Single redirect
+      window.location.href = "employee-dashboard.html";
+    })
+    .catch(err => {
+      console.error("LOGIN ERROR:", err);
+      alert("Login failed. Please try again.");
+      resetLoginUI();
+    });
+}
+
+/* =====================
+   RESET UI
+===================== */
+function resetLoginUI() {
+  document.getElementById("googleBtn").classList.remove("hidden");
+  document.getElementById("googleLoading").classList.add("hidden");
+}
+</script>
+
+</body>
+
+</html>
+
+
